@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block css %}
+    <link href="/static/css/mystyle.css" rel="stylesheet">
+{% endblock %}
+
+{% block main %}
+
+    <div class="footer">
+        <form>
+            {% csrf_token %}
+            <br>
+            <div class="mydiv">
+                <p class="mytext">用户名:</p>
+                <input class="input" id="username" type="text" name="username" />
+            </div>
+            <div class="mydiv">
+                <p class="mytext">密码:</p>
+                <input class="input" id="password" type="password" name="password" />
+            </div>
+            <br>
+            <button id="login_submit" type="submit">登陆</button>
+            <br>
+            <span id="errors" style="color: red"></span>
+            <br>
+            <a href="/reg/">没有账户?加入我们</a>
+
+        </form>
+    </div>
+
+    <script language="javascript" type="text/javascript">
+        $("#login_submit").click(function(){
+            $.ajax({
+                type: "POST",
+                url: "/usercontrol/login/",
+                data: {"username": $("#username").val(),
+                    "password": $("#password").val()
+                },
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+                },
+                success: function(data){
+                    var errors = data['errors'];
+                    if(errors.length==0){
+                        location.replace("/");
+                    }
+                    else{
+                        var str = "";
+                        for(var key in errors){
+                            str += errors[key] + "\n";
+                        }
+                        $("#errors").html(str);
+                    }
+                },
+                error: function(XMLHttpRequest){
+                    alert(XMLHttpRequest.responseText);
+                }
+            });
+            return false;
+        });
+    </script>
+
+
+{% endblock %}

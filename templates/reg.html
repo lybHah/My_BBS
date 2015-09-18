@@ -1,0 +1,71 @@
+{% extends 'base.html'%}
+
+{% block css %}
+    <link href="/static/css/mystyle.css" rel="stylesheet">
+{% endblock %}
+
+{% block main %}
+
+    <div class="footer">
+        <form>
+            {% csrf_token %}
+            <br>
+            <div class="mydiv">
+                <p class="mytext">用户名:</p>
+                <input class="input" id="username" type="text" name="username" />
+                <span id="icon01"></span>
+            </div>
+            <div class="mydiv">
+                <p class="mytext">密码:</p>
+                <input class="input" id="password" type="password" name="password" />
+                <span id="icon02"></span>
+            </div>
+            <div class="mydiv">
+                <p class="mytext">确认密码:</p>
+                <input class="input" id="confirm_password" type="password" name="confirm_password" />
+                <span id="icon03"></span>
+            </div>
+            <span id="errors" style="color: red"></span>
+            <br>
+            <button id="reg_submit" type="submit">注册</button>
+            <br>
+            <a href="/login/">已有账户?点击这里登陆</a>
+        </form>
+    </div>
+
+    <script language="javascript" type="text/javascript">
+
+        $("#reg_submit").click(function(){
+            $.ajax({
+                type: "POST",
+                url: "/usercontrol/reg/",
+                data: {"username": $("#username").val(),
+                    "password1": $("#password").val(),
+                    "password2": $("#confirm_password").val()
+                },
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+                },
+                success: function(data){
+                    var errors = data['errors'];
+                    if(errors.length==0){
+                        location.replace("/");
+                    }
+                    else{
+                        var str = "";
+                        for(var key in errors){
+                            str += errors[key] + "<br>";
+                        }
+                        $("#errors").html(str);
+                    }
+                },
+                error: function(XMLHttpRequest){
+                    alert(XMLHttpRequest.responseText);
+                }
+            });
+            return false;
+        });
+    </script>
+
+{% endblock %}
+

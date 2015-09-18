@@ -1,0 +1,62 @@
+<form style="width: 600px;margin-left: 230px;">
+    {% csrf_token %}
+    {% if user.is_authenticated %}
+        <div>
+            <img src="{{ user.bbs_user.photo }}" style="width: 50px;height: 50px;"/>
+            <label style="width: 50px;height: 20px;text-align: center;display: block;">{{ user.username }}</label>
+        </div>
+        <label style="width: 35px;height: 20px;margin-left: 55px;margin-top: -70px;position: absolute;">标题:</label>
+        <input name="bbs_title" id="bbs_title" style="width: 510px;height: 20px;margin-left: 90px;margin-top: -70px;position: absolute;">
+        <textarea rows=3 name="bbs_content" id="bbs_content" style="width: 545px; margin-left: 55px;margin-top: -50px;"></textarea>
+        <br>
+        <input type="hidden" name="category_id" value="{{ category_chosen_id }}">
+        <button class="btn btn-default" type="submit" value="发帖" id="submit_bbs" style="float: right">发表帖子</button>
+    {% else %}
+        <textarea rows=3 name="bbs_content01" placeholder="发帖请登录." disabled="disabled" style="width: 600px"></textarea>
+        <br>
+        <!-- type要改为button，默认为submit -->
+        <a href="/login/" style="margin-left: 265px;color: #000;position: relative;top: -60px"><button class="btn btn-danger" type="button" name="login" id="login">登陆</button></a>
+    {% endif %}
+</form>
+
+<script language="javascript" type="text/javascript">
+
+    // 发帖子
+    $("#submit_bbs").click(function(){
+        $.ajax({
+            type: "POST",
+            url: "/sub_bbs/",
+            data: {"bbs_title": $("#bbs_title").val(),
+                "bbs_content": $("#bbs_content").val(),
+                "category_id": {{ category_chosen_id }}
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+                // 标题不能为空
+                if($("#bbs_title").val()==''){
+                    alert("标题不能为空");
+                    return false;
+                }
+                // 内容也不能为空
+                if($("#bbs_content").val()==''){
+                    alert("帖子内容不能为空");
+                    return false;
+                }
+            },
+            success: function (new_bbs_id) {
+                if(new_bbs_id>0) {
+                    alert("发帖成功!");
+                    location.replace('/detail/'+new_bbs_id);
+                }
+                else{
+                    alert("error!");
+                }
+            },
+            error: function (XMLHttpRequest) {
+                alert(XMLHttpRequest.responseText);
+            }
+        });
+        return false;
+    });
+
+</script>

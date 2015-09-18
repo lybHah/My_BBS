@@ -1,0 +1,53 @@
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">My论坛</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                {% if category_chosen_id %}
+                    <li><a href="/">全部</a></li>
+                {% else %}
+                    <li class="active"><a href="/">全部</a></li>
+                {% endif %}
+                {% for category in category_list %}
+                    {% ifequal category.id  category_chosen_id %}
+                        <li class="active"><a href="/category/{{ category.id }}">{{ category.name }}</a></li>
+                    {% else %}
+                        <li><a href="/category/{{ category.id }}">{{ category.name }}</a></li>
+                    {% endifequal %}
+                {% endfor %}
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <!-- 搜索框 -->
+                <div style="float: left;margin-right: 30px;margin-top: 10px;border: 1px solid yellow;background-color: white;">
+                    <form id="search" action="/search/" method="get" style="height: 30px">
+                        <input type="text" name="search" id="search_text" style="width: 160px;height: 30px;border: none;">
+                        <input type="image" src="/static/images/search.png" id="search_img" style="height: 25px;width: 25px;float: right;margin-top: 2.5px;">
+                    </form>
+                </div>
+
+                <li class="dropdown">
+                    {% if user.is_authenticated %}
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            {{ user.username }}
+                            <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/personal_center/{{ user.id }}/">个人中心</a></li>
+                            <li><a href="#">我的帖子</a></li>
+                            <li><a href='/usercontrol/logout/'>退出</a></li>
+                        </ul>
+                        </li></ul>
+                    {% else %}
+                        <li>
+                            <a href='/login/'>登陆</a>
+                        </li>
+                        <li>
+                            <a href="/reg">注册</a>
+                        </li>
+                    {% endif %}
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>

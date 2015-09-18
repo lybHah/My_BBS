@@ -1,0 +1,21 @@
+{% extends 'index.html' %}
+
+{% block page-content02 %}
+
+    <div>
+        <!-- insert the <head> -->
+        <script type="text/javascript" src="/static/tinymce/js/tinymce/tinymce.min.js"></script>
+        <script type="text/javascript">
+            tinymce.init({
+                selector: "textarea",
+            });
+        </script>
+
+        <!-- insert the <body> -->
+        <form method="post" action="/sub_bbs/">
+            <textarea name="content"></textarea>
+            <input type="submit" value="发表新帖">
+        </form>
+    </div>
+
+{% endblock %}

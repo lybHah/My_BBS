@@ -1,0 +1,114 @@
+<div class="center-container-hx">
+
+    <ul id="comment_list" style="list-style: none">
+        {% for comment in comment_list reversed%}    <!--加上reversed，反向取出数据-->
+            <li style="min-height: 100px">
+                <div style="margin-left: -50px;">
+                    <img src="{{ comment.commentator.photo }}" style="width: 50px;height: 50px;" />
+                </div>
+                <div style="margin-left: -50px;">
+                    <label style="width: 50px;height: 20px;text-align: center;">Lv: 1</label>
+                </div>
+                <div style="position: relative;top: -70px;margin-left: 25px;">
+                    <h3 style="display: inline;">{{ comment.commentator }}</h3>-----------------( {{ comment.date|date:"Y-m-d H:i:s" }})
+                    <br>
+                    {{ comment.content|safe }}    <!-- "|safe" 按照原格式输出 -->
+                </div>
+                <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                <span style="float: right"></span>
+                <hr>
+            </li>
+        {% endfor %}
+    </ul>
+
+</div>
+
+
+<form style="width: 600px;margin-left: 230px;">
+    {% csrf_token %}
+    {% if user.is_authenticated %}
+        <div>
+            <img src="{{ user.bbs_user.photo }}" style="width: 50px;height: 50px;"/>
+            <label style="width: 50px;height: 20px;text-align: center;display: block;">{{ user.username }}</label>
+        </div>
+        <textarea rows=3 name="comment" id="comment" style="width: 545px; margin-left: 55px;margin-top: -70px;"></textarea>
+        <br>
+        <input type="hidden" name="bbs_id" value="{{ object.id }}">
+        <button class="btn btn-default" type="submit" value="评论" id="submit_comment" style="float: right">添加评论</button>
+    {% else %}
+        <textarea rows=3 name="comment_content" placeholder="评论请登录." disabled="disabled" style="width: 600px"></textarea>
+        <br>
+        <!-- type要改为button，默认为submit -->
+        <a href="/login/" style="margin-left: 265px;color: #000;position: relative;top: -60px"><button class="btn btn-danger" type="button" name="login" id="login">登陆</button></a>
+    {% endif %}
+</form>
+
+
+
+<script language="javascript" type="text/javascript">
+
+    // 删除评论
+    $("li").hover(function(){
+        var this_li = this;
+        var username = "{{ user.username }}";
+        var commentator = $("h3",this).html();
+        if(username==commentator){
+            $("span",this).append("<button class=\"btn-link\" id=\"del_comment\">删除评论</button>");
+            var comment_id = $("input[name=comment_id]",this).val();
+            $("#del_comment").click(function(){
+                if(window.confirm("确定删除要评论吗?")) {
+                    $.ajax({
+                        type: "GET",
+                        url: "/del_comment/",
+                        data: {
+                            "comment_id": comment_id
+                        },
+                        beforeSend: function () {
+
+                        },
+                        success: function (flag) {
+                            if(flag==1){
+                                this_li.remove();
+                                alert("删除成功!");
+                            }
+                            else {
+                                alert("error!");
+                            }
+                        },
+                        error: function (XMLHttpRequest) {
+                            alert(XMLHttpRequest.responseText);
+                        }
+                    });
+                }
+                return false;
+            });
+        }
+    },
+    function(){
+        $("span>button",this).remove();
+    });
+
+
+    // 发表评论
+    $("#submit_comment").click(function(){
+        $.ajax({
+            type: "POST",
+            url: "/sub_comment/",
+            data: {"comment": $("#comment").val(),
+                "bbs_id": {{ object.id }}
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+            },
+            success: function (data) {
+                $("#comment").val("");
+                $("#comment_list").append(data);    // prepend是添加到最前面，这个是加到最后
+                alert("评论成功!");
+            },
+            error: function (XMLHttpRequest) {
+                alert(XMLHttpRequest.responseText);
+            }
+        });
+        return false;
+    });
+</script>

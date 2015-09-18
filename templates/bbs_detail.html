@@ -1,14 +1,17 @@
-{% extends 'index.html' %}
+{% extends 'base.html' %}
 
-{% block page-content %}
+{% block main %}
+
+    <div class="center-container-hx">
+        <div class="contents">
+            <h1 style="text-align: center">{{ object.title }}</h1>
+            <hr>
+            {{ object.content|safe }}    <!-- "|safe" 按照原格式输出 -->
+        </div>
     <br>
+    </div>
     <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    {{ bbs_obj.title }}
-    <br>
-    {{ bbs_obj.content }}
+
+    {% include './include/comment.html' %}
 
 {% endblock %}

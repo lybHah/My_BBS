@@ -15,9 +15,18 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from app01 import views
 import app01.urls
+import bbs_and_comment.urls
+import bbs_user.urls
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
+    # url(r'^login/$', views.login),
+    # url(r'^acc_login/$', views.acc_login),
+    # url(r'^logout/$', views.logout_view),
     url(r'', include(app01.urls)),
+    url(r'', include(bbs_and_comment.urls)),
+    url(r'', include(bbs_user.urls)),
 ]

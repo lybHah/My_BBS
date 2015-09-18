@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 """
 Django settings for bbs_pro project.
 
@@ -38,6 +39,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app01',
+    'bbs_and_comment',
+    'bbs_user',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -78,9 +81,9 @@ WSGI_APPLICATION = 'bbs_pro.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bbs_pro',
-        'USER': 'root',
+        'ENGINE': '',
+        'NAME': '',
+        'USER': '',
         'PASSWORD': '',
         'HOST': '',
         'PORT': '',
@@ -93,7 +96,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -115,3 +118,13 @@ TEMPLATE_DIRS = (
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "statics"),
 )
+
+# 每页显示主题的数目
+PAGE_NUM = 20
+
+# 每页评论的数目
+
+COMMENT_PAGE_NUM = 4
+
+# 文件上传时在内存中可以存放最大10m
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760

@@ -1,0 +1,155 @@
+<div style="min-height: 100px;width: 80px;">
+    <a href="#div3"><img src="{{ bbs_user.photo }}" id="change_photo_link" title="单击修改头像"></a>
+    <label class="control-label">&nbsp;&nbsp;&nbsp;性别</label>
+    <label class="control-label">性取向</label>
+    <label class="control-label">手机号码</label>
+    <label class="control-label">你爱我吗</label>
+    <br>
+</div>
+
+<div style="min-height: 100px;min-width: 200px">
+
+    <span>{{ user.username }}</span>
+
+    <form class="form-horizontal">
+        {% csrf_token %}
+
+        <input id="signature" value="{{ bbs_user.signature }}" type="text" title="点击修改个人签名">
+
+
+
+        <div class="controls">
+            <select id="sex">
+                <option value="0">男</option>
+                <option value="1">女</option>
+                <option value="2">其他</option>
+            </select>
+        </div><br>
+
+
+
+        <div class="controls">
+            <select id="sexual_orientation">
+                <option value="0">同性恋</option>
+                <option value="1">异性恋</option>
+                <option value="2">双性恋</option>
+                <option value="3">跨种族</option>
+            </select>
+        </div><br>
+
+
+
+        <!-- Text input-->
+        <div class="controls">
+            <input placeholder="请输入手机号码" class="input-xlarge" type="text" id="phone_num" size="13" value="{{ bbs_user.phone_num }}">
+        </div><br>
+
+
+        <div class="controls">
+            <select>
+                <option>爱</option>
+                <option>爱</option>
+            </select>
+        </div><br>
+
+
+    <div class="control-group">
+        <!-- Button -->
+        <div class="controls">
+            <button id="personal_info_submit" class="btn btn-default" type="submit">保存</button>
+        </div>
+    </div>
+
+</form></div>
+
+
+<script language="javascript" type="text/javascript">
+
+    $(function(){
+        $("#signature").attr("size", $("#signature").val().length);
+        var sex_selected = {{ bbs_user.sex }};
+        var sexual_orientation_selected = {{ bbs_user.sexual_orientation }};
+        switch (sex_selected) {
+            case 0:
+                $("#sex option[value=0]").attr("selected", "selected");
+                break;
+            case 1:
+                $("#sex option[value=1]").attr("selected", "selected");
+                break;
+            case 2:
+                $("#sex option[value=2]").attr("selected", "selected");
+                break;
+            default :
+                $("#sex option[value=0]").attr("selected", "selected");
+        }
+        switch (sexual_orientation_selected) {
+            case 0:
+                $("#sexual_orientation option[value=0]").attr("selected", "selected");
+                break;
+            case 1:
+                $("#sexual_orientation option[value=1]").attr("selected", "selected");
+                break;
+            case 2:
+                $("#sexual_orientation option[value=2]").attr("selected", "selected");
+            case 3:
+                $("#sexual_orientation option[value=3]").attr("selected", "selected");
+                break;
+            default :
+                $("#sexual_orientation option[value=0]").attr("selected", "selected");
+        }
+        $("#sexual_orientation option[value=sexual_orientation_selected]").attr("selected", "selected");
+    });
+
+
+    $("#change_photo_link").click(function(){
+        $("#button1").removeClass('active');
+        $("#button2").removeClass('active');
+        $("#button3").css("display", "").addClass('active');
+        $("#div1").css("display", "none");
+        $("#div2").css("display", "none");
+        $("#div3").css("display","");
+    });
+
+
+    $("#signature").click(function(){
+        this.style.backgroundColor = "#B4EAE2";
+    });
+    $("#signature").blur(function(){
+        this.style.backgroundColor = "#FEF9FE";
+        $("#signature").attr("size", $("#signature").val().length);
+    });
+
+
+    $("#personal_info_submit").click(function(){
+        $.ajax({
+            type: "POST",
+            url: "/usercontrol/personal_info/",
+            data: {"signature": $("#signature").val(),
+                "sex": $("#sex").val(),
+                "sexual_orientation": $("#sexual_orientation").val(),
+                "phone_num": $("#phone_num").val()
+            },
+            beforeSend: function(xhr){
+                xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+            },
+            success: function(data){
+                var errors = data['errors'];
+                if(errors.length==0){
+                    alert("成功!");
+                    location.reload();
+                }
+                else{
+                    var str = "";
+                    for(var key in errors){
+                        str += errors[key] + "\n";
+                    }
+                    alert(str);
+                }
+            },
+            error: function(XMLHttpRequest){
+                alert(XMLHttpRequest.responseText);
+            }
+        });
+        return false;
+    });
+</script>

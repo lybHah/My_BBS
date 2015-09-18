@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block css %}
+    <link href="/static/css/mystyle.css" rel="stylesheet">
+{% endblock %}
+
+{% block main %}
+
+    <div class="personal_center">
+
+            <ul class="nav nav-tabs">
+                <li class="active" id="button1"><a href="#div1">个人资料</a> </li>
+                <li id="button2"><a href="#div2">修改密码</a> </li>
+                <li id="button3" style="display: none"><a href="#div3">修改头像</a> </li>
+            </ul>
+
+        <div class="personal_center_form" id="div1">
+            {% include './include/personal_info.html' %}
+        </div>
+
+        <div class="personal_center_form" id="div2" style="display: none">
+            {% include './include/change_password.html' %}
+        </div>
+
+        <div class="personal_center_form" id="div3" style="display: none">
+            {% include './include/change_photo.html' %}
+        </div>
+
+    </div>
+
+    <script language="javascript" type="text/javascript">
+        $("#button1").click(function(){
+            $("#button2").removeClass('active');
+            $("#button3").removeClass('active').css("display","none");
+            $("#button1").addClass('active');
+            $("#div2").css("display", "none");
+            $("#div3").css("display", "none");
+            $("#div1").css("display","");
+        });
+
+        $("#button2").click(function(){
+            $("#button1").removeClass('active');
+            $("#button3").removeClass('active').css("display", "none");
+            $("#button2").addClass('active');
+            $("#div1").css("display", "none");
+            $("#div3").css("display", "none");
+            $("#div2").css("display", "");
+        });
+    </script>
+
+{% endblock %}
